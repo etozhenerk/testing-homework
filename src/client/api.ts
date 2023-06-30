@@ -1,21 +1,22 @@
-import axios from 'axios';
+import axios, { AxiosStatic } from 'axios';
 import { CartState, CheckoutFormData, CheckoutResponse, Product, ProductShortInfo } from '../common/types';
 
 export class ExampleApi {
-    constructor(private readonly basename: string) {
-
+    axios: AxiosStatic;
+    constructor(private readonly basename: string, axiosClass?: AxiosStatic) {
+        this.axios = axiosClass || axios;
     }
 
     async getProducts() {
-        return await axios.get<ProductShortInfo[]>(`${this.basename}/api/products`);
+        return await this.axios.get<ProductShortInfo[]>(`${this.basename}/api/products`);
     }
 
     async getProductById(id: number) {
-        return await axios.get<Product>(`${this.basename}/api/products/${id}`);
+        return await this.axios.get<Product>(`${this.basename}/api/products/${id}`);
     }
 
     async checkout(form: CheckoutFormData, cart: CartState) {
-        return await axios.post<CheckoutResponse>(`${this.basename}/api/checkout`, { form, cart });
+        return await this.axios.post<CheckoutResponse>(`${this.basename}/api/checkout`, { form, cart });
     }
 }
 
