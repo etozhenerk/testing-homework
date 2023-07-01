@@ -26,7 +26,6 @@ router.get('/contacts', indexHtml);
 router.get('/cart', indexHtml);
 
 router.get('/api/products', (req, res) => {
-    console.log(123);
     
     const products = store.getAllProducts(getBugId(req));
     res.json(products);
