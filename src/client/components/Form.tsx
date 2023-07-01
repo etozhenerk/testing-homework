@@ -22,7 +22,7 @@ export const Form: React.FC<FormProps> = ({ onSubmit }) => {
     const [address, setAddress] = useState('');
 
     const nameIsValid = Boolean(name.trim());
-    const phoneIsValid = process.env.BUG_ID !== '10' ? PHONE_REGEX.test(phone.trim()) : false;
+    const phoneIsValid =  process.env.BUG_ID !== '10' ? PHONE_REGEX.test(phone.trim()) : false;
     const addressIsValid = Boolean(address.trim());
 
     const onChangeName = useCallback((e: ChangeEvent<HTMLInputElement>) => {
@@ -55,6 +55,7 @@ export const Form: React.FC<FormProps> = ({ onSubmit }) => {
             <div className="mb-3">
                 <label htmlFor="f-name" className="form-label">Name</label>
                 <input
+                    data-testid="nameInput"
                     id="f-name"
                     type="text"
                     disabled={sent}
@@ -67,6 +68,7 @@ export const Form: React.FC<FormProps> = ({ onSubmit }) => {
                 <label htmlFor="f-phone" className="form-label">Phone</label>
                 <input
                     id="f-phone"
+                    data-testid="phoneInput"
                     type="text"
                     disabled={sent}
                     className={bem("Field", { type: 'phone' }, [getControlClass(phoneIsValid, submitted)] )}
@@ -77,6 +79,7 @@ export const Form: React.FC<FormProps> = ({ onSubmit }) => {
                 <label htmlFor="f-address" className="form-label">Address</label>
                 <textarea
                     id="f-address"
+                    data-testid="addressInput"
                     disabled={sent}
                     rows={3}
                     className={bem("Field", { type: 'address' }, [getControlClass(addressIsValid, submitted)] )}

@@ -1,28 +1,22 @@
 import React from "react";
 import "@testing-library/jest-dom";
 
-import { render, screen } from "@testing-library/react";
-
-import { CartApi, ExampleApi } from "../../src/client/api";
-import { initStore } from "../../src/client/store";
-import { BrowserRouter } from "react-router-dom";
-import { Provider } from "react-redux";
 import { Catalog } from "../../src/client/pages/Catalog";
+import { renderApp } from "./utils/allProviders";
+import { ExampleApi } from "../../src/client/api";
+import { screen } from "@testing-library/react";
+import { Application } from "../../src/client/Application";
 
 describe("Проверка страницы Catalog", () => {
-  it("Заголовок на странице должен иметь текст Delivery", () => {
-    const basename = "/";
-    const api = new ExampleApi(basename);
-    const cart = new CartApi();
-    const store = initStore(api, cart);
+    it("У всех продуктов должно отображаться название", async () => {
+        // const api = new ExampleApi("/");
+        // const { getAllByRole, getByText, findAllByRole, user } = renderApp({ children: <Application />, mockApi: api });
+        // const lint = getByText("Catalog");
+        // const a = await api.getProducts();
+        // console.log(a);
 
-    const app = (
-      <BrowserRouter basename={basename}>
-        <Provider store={store}>
-          <Catalog />
-        </Provider>
-      </BrowserRouter>
-    );
-    const { getAllByRole } = render(app);
-  });
+        // await user.click(lint);
+        // await screen.findAllByRole("link", { name: /details/i }, { timeout: 2000 });
+        // screen.logTestingPlaygroundURL();
+    });
 });

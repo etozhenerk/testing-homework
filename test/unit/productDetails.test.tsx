@@ -1,43 +1,88 @@
 import React from "react";
 import "@testing-library/jest-dom";
 
-import { render } from "@testing-library/react";
-
 import { Product } from "../../src/common/types";
-import { BrowserRouter } from "react-router-dom";
-import { Provider } from "react-redux";
-import { CartApi, ExampleApi } from "../../src/client/api";
-import { initStore } from "../../src/client/store";
 import { ProductDetails } from "../../src/client/components/ProductDetails";
+import { renderApp } from "./utils/allProviders";
+import { Application } from "../../src/client/Application";
+import { mockCartApi } from "./mocks/api";
+import { server } from "./mocks/server";
+
+beforeAll(() => {
+    server.listen();
+});
+
+afterEach(() => {
+    server.resetHandlers();
+});
+
+afterAll(() => {
+    server.close();
+});
 
 describe("Проверка компонента ProductDetails", () => {
-  it("В карточке товара должно отображаться название товара", () => {
-    const product: Product = {
-      id: 1,
-      name: "product",
-      price: 99,
-      description: "description",
-      color: "white",
-      material: "frozen",
-    };
+    it("В карточке товара должно отображаться название товара", () => {
+        const product: Product = {
+            id: 1,
+            name: "product",
+            price: 99,
+            description: "description",
+            color: "white",
+            material: "frozen",
+        };
 
-    const basename = "/";
-    const api = new ExampleApi(basename);
-    const cart = new CartApi();
-    const store = initStore(api, cart);
+        const { getByRole } = renderApp({ children: <ProductDetails product={product} /> });
 
-    const app = (
-      <BrowserRouter basename={basename}>
-        <Provider store={store}>
-          <ProductDetails product={product} />
-        </Provider>
-      </BrowserRouter>
-    );
+        const header = getByRole("heading").textContent;
 
-    const { getByRole } = render(app);
+        expect(header).toEqual(product.name);
+    });
 
-    const header = getByRole("heading").textContent;
+    it("Если добавить продукт в корзину, то счетчик продуктов в корзине увеличится", async () => {
+        const { getByText, user, findAllByRole, findByRole } = renderApp({
+            children: <Application />,
+        });
 
-    expect(header).toEqual(product.name);
-  });
+        const link = getByText("Catalog");
+        await user.click(link);
+
+        const productLink = await findAllByRole("link", { name: /details/i });
+
+        await user.click(productLink[0]);
+
+        const button = await findByRole("button", { name: /add to cart/i });
+        const cartlink = getByText("Cart");
+
+        await user.click(button);
+
+        const buttonText = cartlink.textContent;
+
+        expect(buttonText?.includes("1")).toBeTruthy();
+    });
+
+    it("Если добавить продукт в корзину, то продукт добавится в localeStorage", async () => {
+        const product: Product = {
+            id: 1,
+            name: "product",
+            price: 99,
+            description: "description",
+            color: "white",
+            material: "frozen",
+        };
+
+        const cartApi = new mockCartApi();
+
+        const { getByRole, user } = renderApp({
+            children: <ProductDetails product={product} />,
+            cartApi,
+        });
+
+        const button = getByRole("button", { name: /add to cart/i });
+
+        await user.click(button);
+
+        const state = cartApi.getState();
+
+        expect(state).not.toStrictEqual({});
+    });
 });
