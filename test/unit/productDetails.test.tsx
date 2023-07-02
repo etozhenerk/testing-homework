@@ -85,4 +85,26 @@ describe("Проверка компонента ProductDetails", () => {
 
         expect(state).not.toStrictEqual({});
     });
+
+    it("Кнопка в карточке продукта должна быть большой", async () => {
+        const product: Product = {
+            id: 1,
+            name: "product",
+            price: 99,
+            description: "description",
+            color: "white",
+            material: "frozen",
+        };
+
+        const cartApi = new mockCartApi();
+
+        const { getByRole } = renderApp({
+            children: <ProductDetails product={product} />,
+            cartApi,
+        });
+
+        const button = getByRole("button", { name: /add to cart/i });
+
+        expect(button).not.toHaveClass("btn-sm");
+    });
 });
