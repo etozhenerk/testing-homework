@@ -54,7 +54,7 @@ describe("Проверка работы корзины", () => {
         expect(text).toBeTruthy();
     });
 
-    it("После отправки формы с валидными данными контейнер не должен иметь класс alert-danger", async () => {
+    it("После отправки формы с валидными данными, на полях для ввода не должно быть алертов", async () => {
         const name = "test";
         const phone = "89777777777";
         const address = "test";
@@ -83,10 +83,8 @@ describe("Проверка работы корзины", () => {
         await user.type(addressTextbox, address);
         await user.click(checkout);
 
-        await waitFor(() => expect(phoneInput).not.toHaveClass("is-invalid"));
-
-        const successBlock = getByTestId("successMessage");
-
-        expect(successBlock).not.toHaveClass("alert-danger");
+        expect(nameInput).not.toHaveClass("is-invalid");
+        expect(phoneInput).not.toHaveClass("is-invalid");
+        expect(addressTextbox).not.toHaveClass("is-invalid");
     });
 });

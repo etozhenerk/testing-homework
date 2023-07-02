@@ -35,9 +35,3 @@ describe("Проверка страницы Contacts", () => {
     expect(isIncludes).toBeTruthy();
   });
 });
-
-const list = [
-  { width: 320, height: 480 },
-  { width: 768, height: 1024 },
-  { width: 1440, height: 900 },
-];
