@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "scripts": {
         "start": "nodemon ./src/server/index.ts",
-        "test:unit": "jest",
+        "test:unit": "cross-env BUG_ID=0 jest",
         "test:e2e": ".\\node_modules\\.bin\\hermione",
         "test:e2e:gui": ".\\node_modules\\.bin\\hermione gui",
         "test": "npm run test:unit && npm run test:e2e",

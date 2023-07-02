@@ -6,9 +6,11 @@ import axios from "axios";
 import { CheckoutResponse, Order, ProductShortInfo } from "../../src/common/types";
 import { isDefined } from "./utils/isDefined";
 
+const { BUG_ID } = process.env;
+
 describe("Проверка запросов к серверу", () => {
     it("Метод api/products должен массив данных со всеми полями", async () => {
-        const res = await axios.get<ProductShortInfo[]>("http://localhost:3000/hw/store/api/products");
+        const res = await axios.get<ProductShortInfo[]>(`http://localhost:3000/hw/store/api/products?bug_id=${BUG_ID}`);
 
         const isCorrectData = res.data.every(
             (item) => isDefined(item.id) && isDefined(item.name) && isDefined(item.price),
@@ -19,7 +21,7 @@ describe("Проверка запросов к серверу", () => {
 
     it("Метод api/products/{id} должен возвращать данные продукта с переданным id", async () => {
         const id = 5;
-        const res = await axios.get<ProductShortInfo>(`http://localhost:3000/hw/store/api/products/${id}`);
+        const res = await axios.get<ProductShortInfo>(`http://localhost:3000/hw/store/api/products/${id}?bug_id=${BUG_ID}`);
 
         const resId = res.data.id;
 
@@ -42,11 +44,11 @@ describe("Проверка запросов к серверу", () => {
             },
         };
 
-        const checkoutRes = await axios.post<CheckoutResponse>("http://localhost:3000/hw/store/api/checkout", data);
+        const checkoutRes = await axios.post<CheckoutResponse>(`http://localhost:3000/hw/store/api/checkout?bug_id=${BUG_ID}`, data);
         const orderRes = await axios.get<Order[]>("http://localhost:3000/hw/store/api/orders");
 
         const orderLength = orderRes.data.length;
-        const checkoutId = checkoutRes.data.id
+        const checkoutId = checkoutRes.data.id;
 
         expect(orderLength).toBe(checkoutId);
     });
